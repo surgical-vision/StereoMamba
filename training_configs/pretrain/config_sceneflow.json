@@ -1,0 +1,70 @@
+{
+    "experiment_tag": "Pretrain_on_sceneflow",
+    "project": "stereomamba",
+    "device": "cuda",
+    "use_amp": true,
+    "overfit": false,
+    "seed": 666,
+    "load_model": null,
+    "dataset": "sceneflow",
+    "data_path":"/workspace/dataset/sceneflow",
+    "trainlist":"/workspace/StereoMamba2/datasets/filenames/sceneflow_training.txt",
+    "testlist":"/workspace/StereoMamba2/datasets/filenames/sceneflow_testing.txt",
+    "ckpt_path": "/workspace/StereoMamba2/checkpoints/pretrain_cross_attn",
+
+    "cross_attn": true,
+    "use_concat_volume":false,
+    "disparity_loss": "multiscale_smooth_l1",
+    "compute_error": true, 
+    "max_disparity": 192,
+
+    "batch_size": 14,
+    "test_batch_size": 6,
+
+    "use_onecycle_lr": true,
+    "lr": 0.0002,
+    "weight_decay":0.0001,
+
+    "d_model":128,
+    "d_state":64,
+    "d_conv":4,
+    "expand":2,
+    "headdim":16,
+    "ngroups":1,
+
+    "supervision_scales": 6,
+    "scale_weights": [0.5, 0.5, 0.7, 1.0],
+
+    "epochs": 40,
+    "wandb_log":1,
+    "model_save_period": 5,
+
+    "patch_size": 4,
+    "in_chans": 3,
+    "depths":[2, 2, 9, 2], 
+    "dims":[96, 192, 384, 768], 
+
+    "ssm_d_state":16,
+    "ssm_ratio":2.0,
+    "ssm_dt_rank":"auto",
+    "ssm_act_layer":"silu",        
+    "ssm_conv":3,
+    "ssm_conv_bias":true,
+    "ssm_drop_rate":0.0, 
+    "ssm_init":"v0",
+    "forward_type":"v2",
+
+    "mlp_ratio":4.0,
+    "mlp_act_layer":"gelu",
+    "mlp_drop_rate":0.0,
+    "gmlp":false,
+
+    "drop_path_rate":0.1, 
+    "patch_norm":true, 
+    "norm_layer":"LN", 
+    "downsample_version":  "v2", 
+    "patchembed_version":  "v1", 
+    "use_checkpoint":false,
+    "posembed": false,
+    "imgsize": 224
+}
