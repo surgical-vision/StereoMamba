@@ -15,6 +15,7 @@
 - PyTorch 2.0+
 - CUDA compatible GPU
 - VMamba package
+- Mamba package
 
 ## Setup
 
@@ -34,6 +35,10 @@ pip install -r requirements.txt
 git clone https://github.com/MzeroMiko/VMamba.git
 pip install -r requirements.txt
 cd kernels/selective_scan && pip install .
+
+# Install Mamba2
+git clone https://github.com/state-spaces/mamba.git
+pip install .
 ```
 
 ## Training Pipeline
