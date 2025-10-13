@@ -6,6 +6,8 @@
 ## Overview
 
 ### Architecture
+This work has been accepted in IEEE RAL
+Paper link: https://arxiv.org/abs/2402.18737
 
 ![m3dris-architecture](media/pipeline.png)
 
