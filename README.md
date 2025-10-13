@@ -7,7 +7,7 @@
 
 ### Architecture
 This work has been accepted in IEEE RAL
-Paper link: https://arxiv.org/abs/2402.18737
+Paper link: https://ieeexplore.ieee.org/document/11146458
 
 ![m3dris-architecture](media/pipeline.png)
 
