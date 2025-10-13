@@ -73,10 +73,6 @@ left_img_path = '/workspace/dataset/ris_2017/train_set/instrument_dataset_8/left
 right_img_path = '/workspace/dataset/ris_2017/train_set/instrument_dataset_8/right_frame'
 disp_path = '/workspace/StereoMamba2/disparity_maps_scared_epoch_100/ris2017_trainset/train_set/instrument_dataset_8'
 
-# left_img_path = '/workspace/dataset/StereoMIS/P2_8/left_finalpass'
-# right_img_path = '/workspace/dataset/StereoMIS/P2_8/right_finalpass'
-# disp_path = '/workspace/StereoMamba2/disparity_maps_scared_epoch_100/stereomis_testing/P2_8'
-
 def main():
     # Create output directory for warped images
     output_dir = os.path.join(os.path.dirname(disp_path), 'warped_images')

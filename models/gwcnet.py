@@ -156,9 +156,7 @@ class GwcNet(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, features_left, features_right):
-        # features_left = self.feature_extraction(left)
-        # features_right = self.feature_extraction(right)
-        # import ipdb ;ipdb.set_trace()
+
         gwc_volume = build_gwc_volume(features_left[1], features_right[1], self.maxdisp // 4,
                                       self.num_groups)
         if self.use_concat_volume:

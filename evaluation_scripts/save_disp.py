@@ -113,7 +113,6 @@ def demo(args):
             end_time = time.time()
             print(f"Time taken for inference: {end_time - start_time}")
             disp = disparity_predictions[-1]
-            import ipdb; ipdb.set_trace()
             # Remove padding
             if top_pad > 0:
                 disp = disp[:, top_pad:, :]
@@ -133,25 +132,20 @@ def demo(args):
                                       left_name.split('/')[5], 
                                       left_name.split('/')[-1])
             elif args.images_filename.endswith('stereomis_testing.txt'):
-                # import ipdb; ipdb.set_trace()
                 out_filename = os.path.join(output_directory, 
                                       left_name.split('/')[4],
                                       left_name.split('/')[-1])
-            # out_filename = os.path.join(output_directory, 
-            #                           left_name.split('/')[5],
-            #                           left_name.split('/')[6], 
-            #                           left_name.split('/')[-1])
+
             os.makedirs(os.path.dirname(out_filename), exist_ok=True)
-            # import ipdb; ipdb.set_trace()
             disp = disp.cpu().numpy().squeeze()
             skimage.io.imsave(out_filename, np.round(disp * 128).astype(np.uint16))
             # plt.imsave(out_filename.replace('.png', '_color.png'), disp, cmap='jet') 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--restore_ckpt', help="restore checkpoint", default='/workspace/StereoMamba2/checkpoints/Finetune_on_scared_cross_attn_lr1_start_from_epoch_25/Finetune_on_scared_epoch_100_error_1.513.pt')
+    parser.add_argument('--restore_ckpt', help="restore checkpoint", default='/workspace/scared_model_best.pth')
     parser.add_argument('--default_config', help="config file", default='/workspace/StereoMamba2/training_configs/fine_tune/config_scared.json')
-    parser.add_argument('--output_directory', help="directory to save output", default='/workspace/StereoMamba2/detele_me')
+    parser.add_argument('--output_directory', help="directory to save output", default='/workspace/StereoMamba2/output')
     parser.add_argument('--images_filename', help="path to image list file", default='/workspace/StereoMamba2/datasets/filenames/ris2017_testset.txt')
     
     args = parser.parse_args()

@@ -19,7 +19,6 @@ class ScaredDataset(Dataset):
     def load_path(self, list_filename):
         lines = read_all_lines(list_filename)
         splits = [line.split() for line in lines]
-        # import ipdb; ipdb.set_trace()
         left_images = [x[0] for x in splits]
         right_images = [x[1] for x in splits]
         disp_images = [x[2] for x in splits]
@@ -67,7 +66,6 @@ class ScaredDataset(Dataset):
                     "disparity": disparity}
         else:
             w, h = left_img.size
-            #print("kitti_dataset")
             # normalize
             processed = get_transform()
             left_img = processed(left_img).numpy()
@@ -79,9 +77,6 @@ class ScaredDataset(Dataset):
             top_pad = max(target_height - h, 0)
             right_pad = max(target_width - w, 0)
 
-            # top_pad = 1034 -h
-            # right_pad = 1286 - w
-            #print("top_pad",top_pad)
 
             assert top_pad >= 0 and right_pad >= 0
             # pad images

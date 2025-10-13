@@ -26,9 +26,9 @@ def load_calib(calib_path):
     return baseline, focal_length
 
 parser = argparse.ArgumentParser('Evaluate disparity/depth on SCARED dataset')
-parser.add_argument('--predictions', default='/workspace/StereoMamba2/output_scared_lr1_start_from_epoch_25')
+parser.add_argument('--predictions', default='/workspace/StereoMamba/output_scared')
 parser.add_argument('--ground_truth', default='/workspace/dataset/scared/test_data')
-parser.add_argument('--csv', default='/workspace/StereoMamba2/output_scared_lr1_start_from_epoch_25/scared.csv')
+parser.add_argument('--csv', default='/workspace/StereoMamba/output_scared/scared.csv')
 args = parser.parse_args()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -64,22 +64,18 @@ for dataset in ['dataset_8', 'dataset_9']:
         
         # Process all frames in the keyframe
         gt_disp_path = base_gt_path / 'data/disparity'
-        # for gt_file, pred_file in sorted(gt_disp_path.glob('*.png')):
         for gt_file, pred_file in zip(sorted(gt_disp_path.glob('*.png')), sorted(base_pred_path.glob('*.png'))):
-            # frame_name = gt_file.name
-            # pred_file = base_pred_path / frame_name
-            # import ipdb; ipdb.set_trace()
+
             if not pred_file.exists():
                 continue
 
             # Load disparities
-            # import ipdb; ipdb.set_trace()
             disp_gt = load_disparity(gt_file) / 128.0
             disp_pred = load_disparity(pred_file) / 128.0
             
             disp_gt = disp_gt.squeeze(0)
             disp_pred = disp_pred.squeeze(0)
-            # import ipdb; ipdb.set_trace()
+
             if disp_gt.count_nonzero()/torch.numel(disp_gt)<0.1:
                 print("discard frame", gt_file.name)
                 continue

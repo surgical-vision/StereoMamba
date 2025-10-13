@@ -283,7 +283,7 @@ class CrossAttn(nn.Module):
     def forward(self, img_left, img_right, left_features, right_features):
         
         left_attn, right_attn = self.cross_attn(img_left, img_right)
-        # import ipdb; ipdb.set_trace()
+
         left_features = self.conv_concat(torch.cat([left_attn.permute(0,3,1,2), left_features.permute(0,3,1,2)], dim=1))
         right_features = self.conv_concat(torch.cat([right_attn.permute(0,3,1,2), right_features.permute(0,3,1,2)], dim=1))
 

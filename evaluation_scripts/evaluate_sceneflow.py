@@ -32,8 +32,8 @@ def load_calib(calib_path):
     return baseline, focal_length
 
 parser = argparse.ArgumentParser('Evaluate disparity/depth on SCARED dataset')
-parser.add_argument('--restoreckpt', default='/workspace/StereoMamba2/checkpoints/pretrain_cross_attn/Pretrain_on_sceneflow_lowest_eval_loss.pt')
-parser.add_argument('--default_config', default='/workspace/StereoMamba2/training_configs/pretrain/config_sceneflow.json')
+parser.add_argument('--restoreckpt', default='/workspace/StereoMamba/checkpoints/')
+parser.add_argument('--default_config', default='/workspace/StereoMamba/training_configs/pretrain/config_sceneflow.json')
 parser.add_argument('--csv', default='./stereomamba_sceneflow_results.csv')
 args = parser.parse_args()
 

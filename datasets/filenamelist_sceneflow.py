@@ -129,7 +129,7 @@ def main():
     parser = argparse.ArgumentParser(description='Generate stereo dataset file list from SceneFlow structure.')
     parser.add_argument('--root_path', type=str, default='/workspace/dataset/scared/test_data',
                         help='Root directory containing the SceneFlow dataset')
-    parser.add_argument('--output_file', type=str, default='/workspace/StereoMamba2/datasets/filenames/flyingthings_pairs.txt',
+    parser.add_argument('--output_file', type=str, default='/workspace/StereoMamba/datasets/filenames/flyingthings_pairs.txt',
                         help='Path to output file where paths will be written')
     parser.add_argument('--relative', action='store_true', default=False,
                         help='Make output paths relative to root_path')
