@@ -6,7 +6,7 @@
 ## Overview
 
 ### Architecture
-This work has been accepted in IEEE RAL
+This work has been accepted in IEEE RAL.
 Paper link: https://ieeexplore.ieee.org/document/11146458
 
 ![m3dris-architecture](media/pipeline.png)
