@@ -235,6 +235,6 @@ def process_video_and_extract(video_path, input_folder, output_folder, frame_int
 if __name__ == "__main__":
     video_path = '/workspace/dataset/StereoMIS/P2_6/IFBS_ENDOSCOPE-part0006.mp4'
     input_folder = '/workspace/dataset/StereoMIS/P2_6'
-    output_folder = '/workspace/scared_toolkit/stereomis/p2_6'
+    output_folder = '/workspace/stereomis/p2_6'
     
     process_video_and_extract(video_path, input_folder, output_folder, frame_interval=2)
