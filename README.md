@@ -5,7 +5,7 @@
 
 ## Overview
 
-- [UPDATE Feb. 2026] We updated some bugs in code, and released pre-trained weights!
+- [UPDATE Feb. 2026] We fixed some errors in the code.
 - [UPDATE Oct. 2025] This work has been accepted in IEEE RAL! Paper link: https://ieeexplore.ieee.org/document/11146458
 
 ### Architecture
@@ -43,7 +43,6 @@ cd VMamba
 pip install -r requirements.txt
 cd kernels/selective_scan && pip install .
 # if you got problem when installing kernels/selective_scan, you can try: pip install --no-build-isolation .
-
 
 # Install Mamba2
 cd /path/to/StereoMamba/models
