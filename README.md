@@ -5,8 +5,8 @@
 
 ## Overview
 
-- [UPDATE] We updated some bugs in code, and released pre-trained weights!
-- [UPDATE] This work has been accepted in IEEE RAL! Paper link: https://ieeexplore.ieee.org/document/11146458
+- [UPDATE Feb. 2026] We updated some bugs in code, and released pre-trained weights!
+- [UPDATE Oct. 2025] This work has been accepted in IEEE RAL! Paper link: https://ieeexplore.ieee.org/document/11146458
 
 ### Architecture
 
