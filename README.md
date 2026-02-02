@@ -1,19 +1,19 @@
 # StereoMamba: Real-time and Robust Intraoperative Stereo Disparity Estimation via Long-range Spatial Dependencies
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/pytorch-2.0%2B-blue)](https://pytorch.org/)
 
 ## Overview
 
 ### Architecture
-This work has been accepted in IEEE RAL.
-Paper link: https://ieeexplore.ieee.org/document/11146458
+[UPDATE] We updated some bugs in code, and released pre-trained weights!
+[UPDATE] This work has been accepted in IEEE RAL! Paper link: https://ieeexplore.ieee.org/document/11146458
 
 ![m3dris-architecture](media/pipeline.png)
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.9+
 - PyTorch 2.0+
 - CUDA compatible GPU
 - VMamba package
@@ -33,6 +33,7 @@ conda activate stereomamba
 git clone https://github.com/MichaelWangGo/StereoMamba.git
 cd StereoMamba
 pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+pip install wandb
 # you can try other cuda versions that are compatible to your machine
 
 # Install VMamba
@@ -41,12 +42,15 @@ cd VMamba
 pip install -r requirements.txt
 cd kernels/selective_scan && pip install .
 # if you got problem when installing kernels/selective_scan, you can try: pip install --no-build-isolation .
-cd /path/to/StereoMamba
+
 
 # Install Mamba2
+cd /path/to/StereoMamba/models
 git clone https://github.com/state-spaces/mamba.git
 cd mamba
-pip install .
+git fetch --tags
+git checkout v2.2.4
+pip install --no-build-isolation .
 cd /path/to/StereoMamba
 ```
 

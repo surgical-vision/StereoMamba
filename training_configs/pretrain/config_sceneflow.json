@@ -7,10 +7,10 @@
     "seed": 666,
     "load_model": null,
     "dataset": "sceneflow",
-    "data_path":"/workspace/dataset/sceneflow",
-    "trainlist":"/workspace/StereoMamba2/datasets/filenames/sceneflow_training.txt",
-    "testlist":"/workspace/StereoMamba2/datasets/filenames/sceneflow_testing.txt",
-    "ckpt_path": "/workspace/StereoMamba2/checkpoints/pretrain_cross_attn",
+    "data_path":"/workspace/datasets/stereomis",
+    "trainlist":"/workspace/StereoMamba/datasets/filenames/sceneflow_training.txt",
+    "testlist":"/workspace/StereoMamba/datasets/filenames/sceneflow_testing.txt",
+    "ckpt_path": "/workspace/StereoMamba/checkpoints/pretrained_models/sceneflow",
 
     "cross_attn": true,
     "use_concat_volume":false,
@@ -18,14 +18,14 @@
     "compute_error": true, 
     "max_disparity": 192,
 
-    "batch_size": 14,
+    "batch_size": 2,
     "test_batch_size": 6,
 
     "use_onecycle_lr": true,
     "lr": 0.0002,
     "weight_decay":0.0001,
 
-    "d_model":128,
+    "d_model":256,
     "d_state":64,
     "d_conv":4,
     "expand":2,
@@ -41,8 +41,8 @@
 
     "patch_size": 4,
     "in_chans": 3,
-    "depths":[2, 2, 9, 2], 
-    "dims":[96, 192, 384, 768], 
+    "depths":[2, 2, 9], 
+    "dims":[96, 192, 384], 
 
     "ssm_d_state":16,
     "ssm_ratio":2.0,
