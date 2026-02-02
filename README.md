@@ -20,10 +20,11 @@ Paper link: https://ieeexplore.ieee.org/document/11146458
 - Mamba package
 
 ## Setup
+All experiments are conducted in docker container, docker iamge: nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
 
 1. Create and activate conda environment:
 ```bash
-conda create -n stereomamba python=3.8
+conda create -n stereomamba python=3.10
 conda activate stereomamba
 ```
 
@@ -31,16 +32,22 @@ conda activate stereomamba
 ```bash
 git clone https://github.com/MichaelWangGo/StereoMamba.git
 cd StereoMamba
-pip install -r requirements.txt
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+# you can try other cuda versions that are compatible to your machine
 
 # Install VMamba
 git clone https://github.com/MzeroMiko/VMamba.git
+cd VMamba
 pip install -r requirements.txt
 cd kernels/selective_scan && pip install .
+# if you got problem when installing kernels/selective_scan, you can try: pip install --no-build-isolation .
+cd /path/to/StereoMamba
 
 # Install Mamba2
 git clone https://github.com/state-spaces/mamba.git
+cd mamba
 pip install .
+cd /path/to/StereoMamba
 ```
 
 ## Training Pipeline
