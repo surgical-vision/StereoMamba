@@ -5,9 +5,10 @@
 
 ## Overview
 
+- [UPDATE] We updated some bugs in code, and released pre-trained weights!
+- [UPDATE] This work has been accepted in IEEE RAL! Paper link: https://ieeexplore.ieee.org/document/11146458
+
 ### Architecture
-[UPDATE] We updated some bugs in code, and released pre-trained weights!
-[UPDATE] This work has been accepted in IEEE RAL! Paper link: https://ieeexplore.ieee.org/document/11146458
 
 ![m3dris-architecture](media/pipeline.png)
 
@@ -33,8 +34,8 @@ conda activate stereomamba
 git clone https://github.com/MichaelWangGo/StereoMamba.git
 cd StereoMamba
 pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
-pip install wandb
 # you can try other cuda versions that are compatible to your machine
+pip install wandb
 
 # Install VMamba
 git clone https://github.com/MzeroMiko/VMamba.git
