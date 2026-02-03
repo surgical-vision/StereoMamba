@@ -3,10 +3,10 @@ from .vmamba import VSSM, SS2D
 from .feature_fusion import Feature_fusion
 from .cross_attention import CrossAttn
 
-import torch
+# import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from typing import Callable, List, Optional
+# import torch.nn.functional as F
+# from typing import Callable, List, Optional
 import time
 
 
@@ -70,23 +70,17 @@ class StereoMamba(nn.Module):
 
         left_features = self.feature_extractor(img_left)
         right_features = self.feature_extractor(img_right)
-        # start_time = time.time()
-        left_features, right_features = self.feature_fusion(left_features, right_features)
-        # end_time = time.time()
-        # print(f"Feature Fusion Time: {end_time - start_time:.4f} seconds")
-
-        if self.cross_attn:
-            left_features, right_features = self.CrossAttn(img_left, img_right, left_features, right_features)
         
+        left_features, right_features = self.feature_fusion(left_features, right_features)
+        
+        if self.cross_attn:
+            left_features, right_features = self.CrossAttn(left_features, right_features)
+            
         else:
             left_features = left_features.permute(0,3,1,2)
             right_features = right_features.permute(0,3,1,2)
-
-        # import ipdb ;ipdb.set_trace()
+        
         disparity_scales = self.disparity_head((img_left, left_features),
                                                (img_right, right_features))
         
-
-        
-        # cnn_feature = cnn_feature.permute(0,3,1,2)
         return disparity_scales

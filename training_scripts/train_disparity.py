@@ -1,13 +1,13 @@
 import os
 import argparse
-from PIL import Image
+# from PIL import Image
 
 from tqdm import tqdm
-import numpy as np
+# import numpy as np
 import wandb
 import torch
 import torch.optim as optim
-import torchvision.transforms as tv_transforms
+# import torchvision.transforms as tv_transforms
 from torch.utils.data import DataLoader
 
 from utils import Params, set_random_seed, RunningAvg
@@ -96,7 +96,7 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             with torch.cuda.amp.autocast(enabled=config.use_amp):
                 disparity_scales = model(left, right)
-                # import ipdb; ipdb.set_trace()
+
                 training_loss = model_loss(disparity_scales, reference_disparity, mask)
                 # print('training loss:', training_loss)
             scaler.scale(training_loss).backward()
@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 reference_disparity = torch.squeeze(reference_disparity, 1)
                 with torch.cuda.amp.autocast(enabled=config.use_amp):
                     disparity_scales = model(left, right)
-                    # import ipdb;ipdb.set_trace()
+
                     eval_loss = model_loss(disparity_scales, reference_disparity, mask)
                     # left_features3 = left_features[0][0][0:3]
                 

@@ -1,5 +1,3 @@
-# Copyright (c) 2024, Tri Dao, Albert Gu.
-
 import math
 import torch
 import torch.nn as nn
@@ -17,8 +15,8 @@ try:
 except ImportError:
     RMSNormGated, LayerNorm = None, None
 
-from mamba_ssm.ops.triton.ssd_combined import mamba_chunk_scan_combined
-from mamba_ssm.ops.triton.ssd_combined import mamba_split_conv1d_scan_combined
+from mamba.mamba_ssm.ops.triton.ssd_combined import mamba_chunk_scan_combined
+from mamba.mamba_ssm.ops.triton.ssd_combined import mamba_split_conv1d_scan_combined
 
 
 class Mamba2Simple(nn.Module):
@@ -124,8 +122,8 @@ class Mamba2Simple(nn.Module):
 
         # Modify Conv2d downsampling layer
         self.downsample = nn.Conv2d(
-            in_channels=3,  # Changed from d_model to 3 for RGB input
-            out_channels=self.d_model,  # Changed from d_model to 3 for RGB output
+            in_channels=64,  # Changed from d_model to 64 for input
+            out_channels=self.d_model,  # Changed from d_model to 64 for output
             kernel_size=(4, 4),
             stride=(4, 4),
             padding=0,
@@ -133,26 +131,26 @@ class Mamba2Simple(nn.Module):
         )
 
 
-    def forward(self, left_img, right_img, seq_idx=None):
+    def forward(self, left_feat, right_feat, seq_idx=None):
         """
-        left_img: (B, C, H, W) = (14, 3, 256, 512)
-        Returns: same shape as left_img but downsampled
+        left_feat: (B, H, W, C) = (B, 64, 128, 384)
+        Returns: same shape as left_feat but downsampled
         """
-       
+        
         # Apply downsampling using Conv2d
-        left_img_downsampled = self.downsample(left_img)   # Output: [14, 3, 64, 128]
-        right_img_downsampled = self.downsample(right_img) # Output: [14, 3, 64, 128]
-        batch, channels, height, width = left_img_downsampled.shape
-        # Reshape from [B,C,H,W] to [B,H*W,C]
-        left_img_flat = left_img_downsampled.permute(0, 2, 3, 1).reshape(
+        # left_feat_downsampled = self.downsample(left_feat)   # Output: [14, 64, 64, 128]
+        # right_feat_downsampled = self.downsample(right_feat) # Output: [14, 64, 64, 128]
+        batch, height, width, channels = left_feat.shape
+        # Reshape from [B,H,W,C] to [B,H*W,C]
+        left_feat_flat = left_feat.reshape(
             batch, height * width, channels)
-        right_img_flat = right_img_downsampled.permute(0, 2, 3, 1).reshape(
+        right_feat_flat = right_feat.reshape(
             batch, height * width, channels)
         
         seqlen = height * width  # 8192
         
-        zxbcdt_left = self.in_proj(left_img_flat)  # (B, L, d_in_proj)
-        zxbcdt_right = self.in_proj(right_img_flat)
+        zxbcdt_left = self.in_proj(left_feat_flat)  # (B, L, d_in_proj)
+        zxbcdt_right = self.in_proj(right_feat_flat)
         A_left = -torch.exp(self.A_log)  # (nheads) or (d_inner, d_state)
         A_right = -torch.exp(self.A_log)  # (nheads) or (d_inner, d_state)
         initial_states=repeat(self.init_states, "... -> b ...", b=batch) if self.learnable_init_states else None
@@ -235,6 +233,7 @@ class Mamba2Simple(nn.Module):
                 initial_states=initial_states,
                 **dt_limit_kwargs,
             )
+            
             y_left = rearrange(y_left, "b l h p -> b l (h p)")
             y_right = rearrange(y_right, "b l h p -> b l (h p)")
             # Multiply "gate" branch and apply extra normalization layer
@@ -275,16 +274,17 @@ class CrossAttn(nn.Module):
             dtype=None,
         )
         self.conv_concat = nn.Sequential(
-            nn.Conv2d(d_model+384, 384, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True)
+            nn.Conv2d(512, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(256)
         )
 
 
-    def forward(self, img_left, img_right, left_features, right_features):
+    def forward(self, left_features, right_features):
         
-        left_attn, right_attn = self.cross_attn(img_left, img_right)
-
+        left_attn, right_attn = self.cross_attn(left_features, right_features)
+        
         left_features = self.conv_concat(torch.cat([left_attn.permute(0,3,1,2), left_features.permute(0,3,1,2)], dim=1))
         right_features = self.conv_concat(torch.cat([right_attn.permute(0,3,1,2), right_features.permute(0,3,1,2)], dim=1))
-
+        
         return left_features, right_features

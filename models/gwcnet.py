@@ -98,7 +98,7 @@ class GwcNet(nn.Module):
         self.maxdisp = maxdisp
         self.use_concat_volume = use_concat_volume
 
-        self.num_groups = 48
+        self.num_groups = 32
 
         if self.use_concat_volume:
             self.concat_channels = 12
@@ -106,7 +106,6 @@ class GwcNet(nn.Module):
             #                                              concat_feature_channel=self.concat_channels)
         else:
             self.concat_channels = 0
-            # self.feature_extraction = feature_extraction(concat_feature=False)
 
         self.dres0 = nn.Sequential(convbn_3d(self.num_groups + self.concat_channels * 2, 32, 3, 1, 1),
                                    nn.ReLU(inplace=True),
@@ -156,7 +155,7 @@ class GwcNet(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, features_left, features_right):
-
+        
         gwc_volume = build_gwc_volume(features_left[1], features_right[1], self.maxdisp // 4,
                                       self.num_groups)
         if self.use_concat_volume:
