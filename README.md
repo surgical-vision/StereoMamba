@@ -5,6 +5,7 @@
 
 ## Overview
 
+- [UPDATE Feb. 2026] We uploaded weights pretrained on Sceneflow.
 - [UPDATE Feb. 2026] We fixed some errors in the code.
 - [UPDATE Oct. 2025] This work has been accepted in IEEE RAL! Paper link: https://ieeexplore.ieee.org/document/11146458
 
@@ -70,6 +71,8 @@ python -m training_scripts.train_disparity \
 ```
 
 ### 2. Finetuning on SCARED
+We provide pretrained weights on SceneFlow. Please download it [here](https://drive.google.com/drive/folders/1Ks-kx-CnP1EyVcSGxP8nru9o4GnL7aS7?usp=drive_link).
+
 1. Prepare the SCARED dataset using the [Unofficial SCARED toolkit](https://github.com/dimitrisPs/scared_toolkit)
 2. Configure dataset paths in `./training_configs/fine_tune/config_scared.json`
 3. Start finetuning:
