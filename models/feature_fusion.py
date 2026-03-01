@@ -5,52 +5,50 @@ from .submodule import *
 
 
 class Feature_fusion(nn.Module):
-    def __init__(self):
+    def __init__(self, out_channels=256):
         super().__init__()
-        
-        # Level 2: [B, 16, 32, 384] -> [B, 64, 128, 128]
-        self.upsample_level2 = nn.Sequential(
-            nn.ConvTranspose2d(384, 128, kernel_size=4, stride=4, padding=0),
-            nn.ReLU(inplace=True)
-        )
-        
-        # Level 1: [B, 16, 32, 384] -> [B, 64, 128, 128]
-        self.upsample_level1 = nn.Sequential(
-            nn.ConvTranspose2d(384, 128, kernel_size=4, stride=4, padding=0),
-            nn.ReLU(inplace=True)
-        )
-        
-        # Level 0: [B, 32, 64, 192] -> [B, 64, 128, 128]
-        self.upsample_level0 = nn.Sequential(
-            nn.ConvTranspose2d(192, 128, kernel_size=2, stride=2, padding=0),
+
+        # 先做通道压缩（比先上采样更省算力）
+        self.reduce0 = nn.Conv2d(192, out_channels, 1, bias=False)
+        self.reduce1 = nn.Conv2d(384, out_channels, 1, bias=False)
+        self.reduce2 = nn.Conv2d(384, out_channels, 1, bias=False)
+
+        # 轻量 refine（depthwise separable）
+        self.refine = nn.Sequential(
+            nn.Conv2d(out_channels, out_channels, 3, padding=1, groups=out_channels, bias=False),
+            nn.Conv2d(out_channels, out_channels, 1, bias=False),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True)
         )
 
-        # Fusion of all levels: 3 * 128 = 384 channels
-        self.fusion_conv = nn.Sequential(
-            nn.Conv2d(384, 256, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(256)
-        )
-    
+    def fuse_one_side(self, features):
+        # BHWC → BCHW
+        f0 = features[0].permute(0, 3, 1, 2)  # 32x64
+        f1 = features[1].permute(0, 3, 1, 2)  # 16x32
+        f2 = features[2].permute(0, 3, 1, 2)  # 16x32
+
+        # 1️⃣ 先降维（比先上采样省 FLOPs）
+        f0 = self.reduce0(f0)
+        f1 = self.reduce1(f1)
+        f2 = self.reduce2(f2)
+
+        # 2️⃣ 上采样到最高分辨率
+        target_size = f0.shape[-2:]
+
+        f1 = F.interpolate(f1, size=target_size, mode="bilinear", align_corners=False)
+        f2 = F.interpolate(f2, size=target_size, mode="bilinear", align_corners=False)
+
+        # 3️⃣ 加法融合（避免 cat）
+        fused = f0 + f1 + f2
+
+        # 4️⃣ 轻量 refine
+        fused = self.refine(fused)
+
+        return fused.permute(0, 2, 3, 1)
+
     def forward(self, left_features, right_features):
-        # Convert from BHWC to BCHW for convolution operations
-        # Process left features
-        left_feat0 = self.upsample_level0(left_features[0].permute(0, 3, 1, 2))
-        left_feat1 = self.upsample_level1(left_features[1].permute(0, 3, 1, 2))
-        left_feat2 = self.upsample_level2(left_features[2].permute(0, 3, 1, 2))
-        
-        # Process right features
-        right_feat0 = self.upsample_level0(right_features[0].permute(0, 3, 1, 2))
-        right_feat1 = self.upsample_level1(right_features[1].permute(0, 3, 1, 2))
-        right_feat2 = self.upsample_level2(right_features[2].permute(0, 3, 1, 2))
 
-        # Concatenate all levels
-        left_fused = torch.cat([left_feat0, left_feat1, left_feat2], dim=1)
-        right_fused = torch.cat([right_feat0, right_feat1, right_feat2], dim=1)
-        
-        # Final fusion
-        left_output = self.fusion_conv(left_fused).permute(0, 2, 3, 1)  # Back to BHWC
-        right_output = self.fusion_conv(right_fused).permute(0, 2, 3, 1)  # Back to BHWC
-        
+        left_output = self.fuse_one_side(left_features)
+        right_output = self.fuse_one_side(right_features)
+
         return left_output, right_output

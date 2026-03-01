@@ -42,7 +42,7 @@ pip install wandb
 git clone https://github.com/MzeroMiko/VMamba.git
 cd VMamba
 pip install -r requirements.txt
-cd kernels/selective_scan && pip install .
+cd kernels/selective_scan && pip install --no-build-isolation .
 # if you got problem when installing kernels/selective_scan, you can try: pip install --no-build-isolation .
 
 # Install Mamba2

@@ -38,7 +38,7 @@ class SceneFlowDatset(Dataset):
 
         if self.training:
             w, h = left_img.size
-            crop_w, crop_h = 512, 256
+            crop_w, crop_h = 640, 320
 
             x1 = random.randint(0, w - crop_w)
             y1 = random.randint(0, h - crop_h)
@@ -58,7 +58,7 @@ class SceneFlowDatset(Dataset):
                     "disparity": disparity}
         else:
             w, h = left_img.size
-            crop_w, crop_h = 960, 512
+            crop_w, crop_h = 736, 512
 
             left_img = left_img.crop((w - crop_w, h - crop_h, w, h))
             right_img = right_img.crop((w - crop_w, h - crop_h, w, h))
