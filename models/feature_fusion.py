@@ -13,6 +13,17 @@ class Feature_fusion(nn.Module):
         self.reduce1 = nn.Conv2d(384, out_channels, 1, bias=False)
         self.reduce2 = nn.Conv2d(384, out_channels, 1, bias=False)
 
+        # 2x 上采样（depthwise 反卷积，参数和显存开销更低）
+        self.up2x = nn.ConvTranspose2d(
+            out_channels,
+            out_channels,
+            kernel_size=4,
+            stride=2,
+            padding=1,
+            groups=out_channels,
+            bias=False,
+        )
+
         # 轻量 refine（depthwise separable）
         self.refine = nn.Sequential(
             nn.Conv2d(out_channels, out_channels, 3, padding=1, groups=out_channels, bias=False),
@@ -32,13 +43,17 @@ class Feature_fusion(nn.Module):
         f1 = self.reduce1(f1)
         f2 = self.reduce2(f2)
 
-        # 2️⃣ 上采样到最高分辨率
-        target_size = f0.shape[-2:]
+        # 2️⃣ ConvTranspose2d 上采样到最高分辨率
+        f1 = self.up2x(f1)
+        f2 = self.up2x(f2)
 
-        f1 = F.interpolate(f1, size=target_size, mode="bilinear", align_corners=False)
-        f2 = F.interpolate(f2, size=target_size, mode="bilinear", align_corners=False)
+        # 若输入分辨率存在微小偏差，做一次安全对齐
+        if f1.shape[-2:] != f0.shape[-2:]:
+            f1 = F.interpolate(f1, size=f0.shape[-2:], mode="nearest")
+        if f2.shape[-2:] != f0.shape[-2:]:
+            f2 = F.interpolate(f2, size=f0.shape[-2:], mode="nearest")
 
-        # 3️⃣ 加法融合（避免 cat）
+        # 3️⃣ 低显存融合（避免 cat 产生 3 倍通道临时张量）
         fused = f0 + f1 + f2
 
         # 4️⃣ 轻量 refine
